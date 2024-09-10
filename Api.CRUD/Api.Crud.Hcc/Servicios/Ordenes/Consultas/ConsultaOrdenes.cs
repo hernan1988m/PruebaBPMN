@@ -222,6 +222,33 @@ namespace Api.Crud.Hcc.Servicios.Ordenes.Consultas
             return respuesta;
         }
 
+        public async Task<AppRespuesta<bool>> EliminarOrden(int ordenId)
+        {
+            AppRespuesta<bool> respuesta = new AppRespuesta<bool>();
+            try
+            {                
+                var orden = await _dbContexto.TbHccOrdenes.FirstOrDefaultAsync(o => o.OrdId == ordenId);
+                if (orden == null)
+                {
+                    respuesta.AppError("La orden no existe.");
+                    return respuesta;
+                }
+
+                // Realizar el borrado lógico
+                orden.OrdEstatus = 0; 
+              
+                _dbContexto.TbHccOrdenes.Update(orden);
+                await _dbContexto.SaveChangesAsync();
+
+                respuesta.AppExitoso(true, "La orden fue eliminada lógicamente correctamente.");
+            }
+            catch (Exception ex)
+            {
+                respuesta.AppError("Ocurrió un error al eliminar la orden: ");
+            }
+
+            return respuesta;
+        }
 
     }
 }

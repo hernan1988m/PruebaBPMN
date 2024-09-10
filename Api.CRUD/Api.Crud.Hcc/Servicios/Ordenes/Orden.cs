@@ -146,5 +146,31 @@ namespace Api.Crud.Hcc.Servicios.Ordenes
 
             return respuesta;
         }
+
+        public async Task<AppRespuesta<bool>> EliminaOrden(int ordenId)
+        {
+
+            AppRespuesta<bool> respuesta = new AppRespuesta<bool>();
+            try
+            {
+                var resultadoEliminaOrden = await _consultas.EliminarOrden(ordenId);
+
+                if (resultadoEliminaOrden.EsError == true)
+                {
+                    respuesta.AppError(resultadoEliminaOrden.Mensaje);
+                    return respuesta;
+                }
+
+                respuesta.AppExitoso(resultadoEliminaOrden.Datos, resultadoEliminaOrden.Mensaje);
+
+            }
+            catch (Exception ex)
+            {
+                respuesta.AppError(ex.Message);
+            }
+
+
+            return respuesta;
+        }
     }
 }

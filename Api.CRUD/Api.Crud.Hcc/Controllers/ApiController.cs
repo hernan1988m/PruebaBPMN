@@ -115,7 +115,7 @@ namespace Api.Crud.Hcc.Controllers
             }
             catch (Exception ex)
             {
-                respuesta.AppError(ex, "Ocurrió un problema al dar de alta la orden.");
+                respuesta.AppError(ex, "Ocurrió un problema al actualizar el producto en la orden.");
             }
 
             return Ok(respuesta);
@@ -141,27 +141,37 @@ namespace Api.Crud.Hcc.Controllers
             }
             catch (Exception ex)
             {
-                respuesta.AppError(ex, "Ocurrió un problema al dar de alta la orden.");
+                respuesta.AppError(ex, "Ocurrió un problema al actualizar orden.");
             }
 
             return Ok(respuesta);
         }
 
 
-        [HttpDelete("Elimina/Orden")]
+        [HttpDelete("Elimina/Orden/{ordenId}")]
         [ProducesResponseType(typeof(AppRespuesta<bool>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<AppRespuesta<bool>>> EliminaOrden()
+        public async Task<ActionResult<AppRespuesta<bool>>> EliminaOrden(int ordenId)
         {
             AppRespuesta<bool> respuesta = new AppRespuesta<bool>();
             try
             {
-                return Ok(respuesta);
+                var eliminaOrden = await _orden.EliminaOrden(ordenId);
+
+                if (eliminaOrden.EsError == true)
+                {
+                    respuesta.AppError(eliminaOrden.Mensaje ?? "Error");
+                    return Ok(respuesta);
+                }
+
+                respuesta.AppExitoso(eliminaOrden.Datos, eliminaOrden.Mensaje);
+
             }
             catch (Exception ex)
             {
                 respuesta.AppError(ex, "Ocurrió un problema al eliminar la orden.");
-                return Ok(respuesta);
             }
+
+            return Ok(respuesta);
         }
     }
 }

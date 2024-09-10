@@ -11,5 +11,6 @@ namespace Api.Crud.Hcc.Repositorio.Interfaces.Ordenes.Consultas
         Task<AppRespuesta<bool>> AltaOrden(AltaOrdenSolicitud orden);
         Task<AppRespuesta<bool>> ActualizaProductoOrden(ActualizaOrdenProductoSolicitud parametros);
         Task<AppRespuesta<bool>> ActualizarEstatusOrden(ActualizaEstatusOrdenSolicitud parametros);
+        Task<AppRespuesta<bool>> EliminarOrden(int ordenId);
     }
 }
