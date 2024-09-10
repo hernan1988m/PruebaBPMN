@@ -97,18 +97,28 @@ namespace Api.Crud.Hcc.Controllers
 
         [HttpPut("Actualiza/Orden/AgregaProducto")]
         [ProducesResponseType(typeof(AppRespuesta<bool>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<AppRespuesta<bool>>> AgregaProductoOrden()
+        public async Task<ActionResult<AppRespuesta<bool>>> ActualizaOrdenProducto(ActualizaOrdenProductoSolicitud parametros)
         {
             AppRespuesta<bool> respuesta = new AppRespuesta<bool>();
             try
             {
-                return Ok(respuesta);
+                var aactualizaOrden = await _orden.ActualizaOrdenProducto(parametros);
+
+                if (aactualizaOrden.EsError == true)
+                {
+                    respuesta.AppError(aactualizaOrden.Mensaje ?? "Error");
+                    return Ok(respuesta);
+                }
+
+                respuesta.AppExitoso(aactualizaOrden.Datos, aactualizaOrden.Mensaje);
+
             }
             catch (Exception ex)
             {
-                respuesta.AppError(ex, "Ocurrió un problema al agregar el producto a la orden.");
-                return Ok(respuesta);
+                respuesta.AppError(ex, "Ocurrió un problema al dar de alta la orden.");
             }
+
+            return Ok(respuesta);
         }
 
         [HttpPut("Actualiza/Orden/Estatus")]

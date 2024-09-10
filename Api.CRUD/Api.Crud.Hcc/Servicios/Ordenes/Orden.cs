@@ -94,5 +94,31 @@ namespace Api.Crud.Hcc.Servicios.Ordenes
 
             return respuesta;
         }
+
+        public async Task<AppRespuesta<bool>> ActualizaOrdenProducto(ActualizaOrdenProductoSolicitud parametros)
+        {
+
+            AppRespuesta<bool> respuesta = new AppRespuesta<bool>();
+            try
+            {
+                var resultadoAltualizaProductoOrden = await _consultas.ActualizaProductoOrden(parametros);
+
+                if (resultadoAltualizaProductoOrden.EsError == true)
+                {
+                    respuesta.AppError(resultadoAltualizaProductoOrden.Mensaje);
+                    return respuesta;
+                }
+
+                respuesta.AppExitoso(resultadoAltualizaProductoOrden.Datos, resultadoAltualizaProductoOrden.Mensaje);
+
+            }
+            catch (Exception ex)
+            {
+                respuesta.AppError(ex.Message);
+            }
+
+
+            return respuesta;
+        }
     }
 }

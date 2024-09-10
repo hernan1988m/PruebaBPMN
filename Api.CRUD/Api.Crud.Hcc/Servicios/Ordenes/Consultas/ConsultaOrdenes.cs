@@ -140,7 +140,51 @@ namespace Api.Crud.Hcc.Servicios.Ordenes.Consultas
 
             return respuesta;
         }
-    
-    
+
+        public async Task<AppRespuesta<bool>> ActualizaProductoOrden(ActualizaOrdenProductoSolicitud parametros)
+        {
+            AppRespuesta<bool> respuesta = new AppRespuesta<bool>();
+            try
+            {
+               
+                var orden = await _dbContexto.TbHccOrdenes.FirstOrDefaultAsync(o => o.OrdId == parametros.ordenId);
+                if (orden == null)
+                {
+                    respuesta.AppError("La orden no existe.");
+                    return respuesta;
+                }
+
+               
+                var producto = await _dbContexto.TbHccProductos.FirstOrDefaultAsync(p => p.ProId == parametros.productoId);
+                if (producto == null)
+                {
+                    respuesta.AppError("El producto no existe.");
+                    return respuesta;
+                }
+
+                // Agregar el nuevo producto a la orden
+                var nuevoDetalleOrden = new TbHccOrdenesDetalle
+                {
+                    OrdId = parametros.ordenId,          
+                    ProId = parametros.productoId,        
+                    OrddetCantidad = parametros.cantidad,
+                    OrddetEstatus = 1          
+                };
+
+               
+                _dbContexto.TbHccOrdenesDetalle.Add(nuevoDetalleOrden);
+                await _dbContexto.SaveChangesAsync();
+
+                respuesta.AppExitoso(true, "Producto agregado a la orden exitosamente.");
+            }
+            catch (Exception ex)
+            {
+                respuesta.AppError("Ocurrió un error al agregar el producto a la orden: ");
+            }
+
+            return respuesta;
+        }
+
+
     }
 }
