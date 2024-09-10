@@ -186,5 +186,42 @@ namespace Api.Crud.Hcc.Servicios.Ordenes.Consultas
         }
 
 
+        public async Task<AppRespuesta<bool>> ActualizarEstatusOrden(ActualizaEstatusOrdenSolicitud parametros)
+        {
+            AppRespuesta<bool> respuesta = new AppRespuesta<bool>();
+            try
+            {                
+                var orden = await _dbContexto.TbHccOrdenes.FirstOrDefaultAsync(o => o.OrdId == parametros.ordenId);
+                if (orden == null)
+                {
+                    respuesta.AppError("La orden no existe.");
+                    return respuesta;
+                }
+                               
+                var estatusOrden = await _dbContexto.TbHccCatEstatusOrden.FirstOrDefaultAsync(e => e.CatordId == parametros.nuevoEstatusId);
+                if (estatusOrden == null)
+                {
+                    respuesta.AppError("El nuevo estatus de la orden no es válido.");
+                    return respuesta;
+                }
+
+               
+                orden.CatordId = parametros.nuevoEstatusId;
+
+                // Guardar los cambios en la base de datos
+                _dbContexto.TbHccOrdenes.Update(orden);
+                await _dbContexto.SaveChangesAsync();
+
+                respuesta.AppExitoso(true, "El estatus de la orden fue actualizado correctamente.");
+            }
+            catch (Exception ex)
+            {
+                respuesta.AppError("Ocurrió un error al actualizar el estatus de la orden: ");
+            }
+
+            return respuesta;
+        }
+
+
     }
 }

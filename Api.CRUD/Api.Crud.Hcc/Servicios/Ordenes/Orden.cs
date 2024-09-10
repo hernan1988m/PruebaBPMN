@@ -120,5 +120,31 @@ namespace Api.Crud.Hcc.Servicios.Ordenes
 
             return respuesta;
         }
+
+        public async Task<AppRespuesta<bool>> ActualizaEstatsOrden(ActualizaEstatusOrdenSolicitud parametros)
+        {
+
+            AppRespuesta<bool> respuesta = new AppRespuesta<bool>();
+            try
+            {
+                var resultadoAltualizaEstatusOrden = await _consultas.ActualizarEstatusOrden(parametros);
+
+                if (resultadoAltualizaEstatusOrden.EsError == true)
+                {
+                    respuesta.AppError(resultadoAltualizaEstatusOrden.Mensaje);
+                    return respuesta;
+                }
+
+                respuesta.AppExitoso(resultadoAltualizaEstatusOrden.Datos, resultadoAltualizaEstatusOrden.Mensaje);
+
+            }
+            catch (Exception ex)
+            {
+                respuesta.AppError(ex.Message);
+            }
+
+
+            return respuesta;
+        }
     }
 }

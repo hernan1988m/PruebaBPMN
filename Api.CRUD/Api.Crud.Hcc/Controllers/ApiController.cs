@@ -102,15 +102,15 @@ namespace Api.Crud.Hcc.Controllers
             AppRespuesta<bool> respuesta = new AppRespuesta<bool>();
             try
             {
-                var aactualizaOrden = await _orden.ActualizaOrdenProducto(parametros);
+                var actualizaOrden = await _orden.ActualizaOrdenProducto(parametros);
 
-                if (aactualizaOrden.EsError == true)
+                if (actualizaOrden.EsError == true)
                 {
-                    respuesta.AppError(aactualizaOrden.Mensaje ?? "Error");
+                    respuesta.AppError(actualizaOrden.Mensaje ?? "Error");
                     return Ok(respuesta);
                 }
 
-                respuesta.AppExitoso(aactualizaOrden.Datos, aactualizaOrden.Mensaje);
+                respuesta.AppExitoso(actualizaOrden.Datos, actualizaOrden.Mensaje);
 
             }
             catch (Exception ex)
@@ -123,19 +123,30 @@ namespace Api.Crud.Hcc.Controllers
 
         [HttpPut("Actualiza/Orden/Estatus")]
         [ProducesResponseType(typeof(AppRespuesta<bool>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<AppRespuesta<bool>>> EstatusOrden()
+        public async Task<ActionResult<AppRespuesta<bool>>> ActualizaEstatusOrden(ActualizaEstatusOrdenSolicitud parametros)
         {
             AppRespuesta<bool> respuesta = new AppRespuesta<bool>();
             try
             {
-                return Ok(respuesta);
+                var actualizaOrden = await _orden.ActualizaEstatsOrden(parametros);
+
+                if (actualizaOrden.EsError == true)
+                {
+                    respuesta.AppError(actualizaOrden.Mensaje ?? "Error");
+                    return Ok(respuesta);
+                }
+
+                respuesta.AppExitoso(actualizaOrden.Datos, actualizaOrden.Mensaje);
+
             }
             catch (Exception ex)
             {
-                respuesta.AppError(ex, "Ocurrió un problema al modificar el estatus de la orden.");
-                return Ok(respuesta);
+                respuesta.AppError(ex, "Ocurrió un problema al dar de alta la orden.");
             }
+
+            return Ok(respuesta);
         }
+
 
         [HttpDelete("Elimina/Orden")]
         [ProducesResponseType(typeof(AppRespuesta<bool>), (int)HttpStatusCode.OK)]

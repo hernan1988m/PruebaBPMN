@@ -10,5 +10,6 @@ namespace Api.Crud.Hcc.Repositorio.Interfaces.Ordenes.Consultas
         Task<AppRespuesta<DisponibilidadMesaRespuesta>> GetMesasDisponibles();
         Task<AppRespuesta<bool>> AltaOrden(AltaOrdenSolicitud orden);
         Task<AppRespuesta<bool>> ActualizaProductoOrden(ActualizaOrdenProductoSolicitud parametros);
+        Task<AppRespuesta<bool>> ActualizarEstatusOrden(ActualizaEstatusOrdenSolicitud parametros);
     }
 }
