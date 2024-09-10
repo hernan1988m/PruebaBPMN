@@ -1,5 +1,6 @@
 ﻿using Api.Crud.Hcc.Models.DTOs.Respuestas.Ordenes;
 using Api.Crud.Hcc.Models.DTOs.Respuestas;
+using Api.Crud.Hcc.Models.DTOs.Solicitudes;
 
 namespace Api.Crud.Hcc.Repositorio.Interfaces.Ordenes.Consultas
 {
@@ -7,5 +8,6 @@ namespace Api.Crud.Hcc.Repositorio.Interfaces.Ordenes.Consultas
     {
         Task<AppRespuesta<List<MesaOrdenRespuesta>>> GetOrdenes();
         Task<AppRespuesta<DisponibilidadMesaRespuesta>> GetMesasDisponibles();
+        Task<AppRespuesta<bool>> AltaOrden(AltaOrdenSolicitud orden);
     }
 }

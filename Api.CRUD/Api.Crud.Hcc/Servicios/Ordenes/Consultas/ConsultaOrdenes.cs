@@ -1,6 +1,8 @@
-﻿using Api.Crud.Hcc.Models.Context;
+﻿using Api.Crud.Hcc.Models.ApiCrudModels;
+using Api.Crud.Hcc.Models.Context;
 using Api.Crud.Hcc.Models.DTOs.Respuestas;
 using Api.Crud.Hcc.Models.DTOs.Respuestas.Ordenes;
+using Api.Crud.Hcc.Models.DTOs.Solicitudes;
 using Api.Crud.Hcc.Models.Entidades;
 using Api.Crud.Hcc.Repositorio.Interfaces.Ordenes.Consultas;
 using Microsoft.EntityFrameworkCore;
@@ -93,5 +95,52 @@ namespace Api.Crud.Hcc.Servicios.Ordenes.Consultas
 
             return respuesta;
         }
+    
+        public async Task<AppRespuesta<bool>> AltaOrden(AltaOrdenSolicitud orden)
+        {
+            AppRespuesta<bool> respuesta = new AppRespuesta<bool>();
+            try
+            {
+               
+                var mesa = await _dbContexto.TbHccMesas.FirstOrDefaultAsync(m => m.MesId == orden.mesaId && m.MesDisponible == 1);
+                if (mesa == null)
+                {
+                    respuesta.AppError("La mesa no está disponible o no existe.");
+                    return respuesta;
+                }
+
+               
+                var estatusOrden = await _dbContexto.TbHccCatEstatusOrden.FirstOrDefaultAsync(e => e.CatordId == orden.catordId);
+                if (estatusOrden == null)
+                {
+                    respuesta.AppError("El estatus de la orden no es válido.");
+                    return respuesta;
+                }
+
+             
+                var nuevaOrden = new TbHccOrdenes
+                {
+                    MesId = orden.mesaId,
+                    CatordId = orden.catordId,
+                    OrdFechaInicio = DateTime.Now,  
+                    OrdEstatus = 1                 
+                };
+
+                
+                _dbContexto.TbHccOrdenes.Add(nuevaOrden);
+                await _dbContexto.SaveChangesAsync();
+
+                respuesta.AppExitoso(true, "La nueva orden fue registrada correctamente.");
+
+            }
+            catch (Exception ex)
+            {
+                respuesta.AppError("Ocurrió un error al dar de alta la orden.");
+            }
+
+            return respuesta;
+        }
+    
+    
     }
 }

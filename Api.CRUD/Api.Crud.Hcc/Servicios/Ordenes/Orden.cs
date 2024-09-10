@@ -1,5 +1,6 @@
 ﻿using Api.Crud.Hcc.Models.DTOs.Respuestas;
 using Api.Crud.Hcc.Models.DTOs.Respuestas.Ordenes;
+using Api.Crud.Hcc.Models.DTOs.Solicitudes;
 using Api.Crud.Hcc.Repositorio.Interfaces.Ordenes;
 using Api.Crud.Hcc.Repositorio.Interfaces.Ordenes.Consultas;
 using Microsoft.IdentityModel.Tokens;
@@ -61,6 +62,33 @@ namespace Api.Crud.Hcc.Servicios.Ordenes
             catch (Exception ex)
             {
                 respuesta.AppError(ex, "Error al procesar las ordenes");
+            }
+
+
+            return respuesta;
+        }
+
+
+        public async Task<AppRespuesta<bool>> AltaOrden(AltaOrdenSolicitud orden)
+        {
+
+            AppRespuesta<bool> respuesta = new AppRespuesta<bool>();
+            try
+            {
+                var resultadoAlta = await _consultas.AltaOrden(orden);
+
+                if (resultadoAlta.EsError == true)
+                {
+                    respuesta.AppError(resultadoAlta.Mensaje);
+                    return respuesta;
+                }
+
+                respuesta.AppExitoso(resultadoAlta.Datos, resultadoAlta.Mensaje);
+
+            }
+            catch (Exception ex)
+            {
+                respuesta.AppError(ex.Message);
             }
 
 

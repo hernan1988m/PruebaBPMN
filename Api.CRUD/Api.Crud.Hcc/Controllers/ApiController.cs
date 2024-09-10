@@ -1,5 +1,6 @@
 ﻿using Api.Crud.Hcc.Models.DTOs.Respuestas;
 using Api.Crud.Hcc.Models.DTOs.Respuestas.Ordenes;
+using Api.Crud.Hcc.Models.DTOs.Solicitudes;
 using Api.Crud.Hcc.Repositorio.Interfaces.Ordenes;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -70,18 +71,28 @@ namespace Api.Crud.Hcc.Controllers
 
         [HttpPost("Alta/Orden")]
         [ProducesResponseType(typeof(AppRespuesta<bool>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<AppRespuesta<bool>>> AltaOrden()
+        public async Task<ActionResult<AppRespuesta<bool>>> AltaOrden(AltaOrdenSolicitud orden)
         {
             AppRespuesta<bool> respuesta = new AppRespuesta<bool>();
             try
             {
-                return Ok(respuesta);
+                var altaOrden = await _orden.AltaOrden(orden);
+
+                if (altaOrden.EsError == true)
+                {
+                    respuesta.AppError(altaOrden.Mensaje ?? "Error");
+                    return Ok(respuesta);
+                }
+
+                respuesta.AppExitoso(altaOrden.Datos, altaOrden.Mensaje);
+
             }
             catch (Exception ex)
             {
-                respuesta.AppError(ex, "Ocurrió un problema al dar de alta la orden.");
-                return Ok(respuesta);
+                respuesta.AppError(ex, "Ocurrió un problema al dar de alta la orden.");                
             }
+
+            return Ok(respuesta);
         }
 
         [HttpPut("Actualiza/Orden/AgregaProducto")]
